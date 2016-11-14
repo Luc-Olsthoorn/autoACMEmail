@@ -1,158 +1,42 @@
- <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
-<h1>Generate UFACM listServe email</h1>
-<div><a>Title</a><input id="title" type="text" value="Hello ACM!"></div>
-<div><a>Greeting</a><input id="greeting"type="text" value="This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!"></div>
-<div><input type="button" id ="eventsBtn" value="Get events"></div>
-<div><input type="button" id ="submitBtn" value="Generate HTML"></div>
-<div id="text"></div>
-<div id="plainText" style="width:100%;"></div>
-<script>
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
-$("#submitBtn").click(function(){
-    generateHTML();
-});
-$("#eventsBtn").click(function(){
-    loadEvents();
-});
+<script src = "./moment.js"></script>
+<script src = "./angular-moment.js"></script>
+<html> 
+<body>
 
-function generateHTML()
-{
-  var title = $("#title").val();
-  var greeting = $("#greeting").val();
-  var email = "<link href='https://fonts.googleapis.com/css?family=Roboto:400,200,300' rel='stylesheet' type='text/css'><style>p{font-family: 'Roboto', sans-serif;}h1{fontfamily: 'Roboto', sans-serif;font-weight: 300;}h2{font-family: 'Roboto', sans-serif;font-weight: 400;}h3{font-family: 'Roboto', sans-serif;font-weight: 100;}</style>";
-  email+='<h1 style="text-align:center; ">';
-  email+= title;
-  email += '</h1>'
-  $('#text').append(email);
-  $('#plainText').append('<plaintext>'+email);
-  console.log(email);
-}
-
-function loadEvents()
-{
-  var request = $.ajax(
-  {
-    url: "http://ufacm.xyz/eventStream",
-    type: "get",
-  });
-  request.success(function(res,status, obj){
-    console.log(res);
-    $(res).sort(function(a,b){
-      return new Date($(a).attr("starttime")) < new Date($(b).attr("starttime"));
-    }).each(function(){
-      $('.results').prepend('<div class="row"><div class="col s12 m3"><p>'+(moment(this.starttime).format('dddd, MMMM Do')) +'</p><p> at&nbsp'+(moment(this.starttime).format('h:mm a'))+'</p></div><div class="col s12 m3"></div><div class="col s12 m6"><h3>'+this.name+'</h3><p></p>'+'<p>'+this.description+'</p>'+'<div class="row"><div class="col s10"><p><i class="material-icons">location_on</i>'+this.place.name+'</p></div><div class="col s2"><a href="'+'https://www.facebook.com/events/' + this.facebookEventId +'"><img style="width:30px;"src="font/material-design-icons/social-media.svg"</a></div></div></div></div>');
-    })
-  });
-  request.fail(function()
-  {
-    console.log('something happened to the event stream. Contact an ACM officer to proceed');
-  });
-}
-
-</script>
-<!--<link href='https://fonts.googleapis.com/css?family=Roboto:400,200,300' rel='stylesheet' type='text/css'>
-<style>
-  p{
-    font-family: 'Roboto', sans-serif;
-  }
-  h1{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 300;
-  }
-  h2{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 400;
-  }
-  h3{
-    font-family: 'Roboto', sans-serif;
-    font-weight: 100;
-  }
-</style>
+  <h1>Generate UFACM listServe email</h1>
+  <div style="width:50%;">
   
-<h1 style="text-align:center; ">Hello ACM!</h1>
-<div>
-  <p>This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!<p>
-</div>
 
-<h2 style="text-align:center;">Events</h2>
-</div>
+
+  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+  </fb:login-button>
+
+  <div id="status"></div>
   
-  <div class="results">
-<div class="row">
-  <div class="col s12 m3">
-    
-  </div>
-  <div class="col s12 m3"></div>
-  <div class="col s12 m6">
-    <h3 style="text-align:center;">ACM First Fall '16 GBM + SIG expo</h3>
-    <p>Monday, September 12th at 6:15 pm</p>
-    <p>Come join us for the first General Body meeting of the school year! Learn about our organization, upcoming events, ways to get involved, and all the great Special Interest Groups (SIGs) that UF ACM has to offer! Come by and enjoy some pizza with us! </p>
-    <div class="row">
-      <div class="col s10">
-        <a>Location: LIT 109</a>
-      <a href="https://www.facebook.com/events/1741070326155846/">Facebook</a></div>
+  <div ng-app="main" ng-controller="myEmail">
+    <button class="ui button" ng-click="getEvents()" >Get events</button>
+    <input type="text" name="title" ng-model="title" placeholder="">
+    <input type="text" name="Greeting" ng-model="greeting" placeholder="">
+
+    <h1 style="text-align: center;">{{title}}</h1>
+    <p>{{greeting}}</p>
+    <div ng-repeat="x in events">
+      <h3 style="text-align:center;">{{x.name}}</h3>
+      <p>{{x.start_time | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</p>
+
+      <p>{{x.description}}</p>
+      <div>
+        <a>Location: {{x.place.name}}</a>
+        <a href="https://www.facebook.com/events/{{x.id}}/">Facebook</a></div>
+      </div>
     </div>
   </div>
-</div>
-<div class="col s12 m6">
-<h3 style="text-align:center;">Nielsen Info Session</h3>
-<p>Tuesday, September 13th at 6:30 pm</p>
-<p></p>
-<p>Are you looking for a Summer internship or a full time position? Ever heard of Nielsen? Nielsen Holdings PLC is a global information and measurement company with headquarters in The United Kingdom. Nielsen operates in over 100 countries and employs approximately 44,000 people worldwide. Food and refreshments will be served. Also don't forget to bring your resumes!</p>
-<div >
-<span>
-  <a>Location: TBA</a>
-<a href="https://www.facebook.com/events/174833376284621">Facebook</a>
-</span>
-</div>
-</div>
-<div class="col s12 m6">
-<h3 style="text-align:center;">Bank of America Info Session</h3>
-<p>Wednesday, September 14th at 6:30 pm</p>
-<p></p>
-<p>Bank of America is an American multinational banking and financial services corporation headquartered in Charlotte, North Carolina. Whether you're looking for your next internship, a prospective job, or you're just curious please drop by and bring your resume! Food and beverages will be served.</p>
-<div >
-<span>
-  <a>Location: TBA</a>
-<a href="https://www.facebook.com/events/298354040542555">Facebook</a>
-</span>
-</div>
-</div>
+        
 
-<div class="col s12 m6">
-<h3 style="text-align:center;">Facebook Keynoten</h3>
-<p>Thursday, September 15th at 6:00 pm</p>
-<p></p>
-<p>UF's Association for Computing Machinery is excited to present an evening with Facebook, featuring a keynote talk from Miorel Palii.
+</body>
+<script src ="./support.js"></script>
+</html>
 
-Miorel, a UF Computer Science alum, has worked at Facebook since 2011. Currently a Software Engineer on the K-12 Education Team, Miorel will talk about his team and their work, his own experience at Facebook, and advice to fellow Gators pursuing a career at one of the top tech companies of today.
-Afterwards, Facebook recruiters will explain how working at Facebook is as a whole, as well as opportunities for Internships and Full-time.
-
-Recruiters will be accepting resumes, so make sure to bring them! And of course, swag and food will be provided.
-We look forward to seeing you there!
-Sincerely, your friends at ACM</p>
-<div >
-<span>
-  <a>Location: MCCA G186</a>
-<a href="https://www.facebook.com/events/1601366866822534">Facebook</a>
-</span>
-</div>
-
-</div> 
-<div class="col s12 m6">
-<h3 style="text-align:center;">ACM & ACE Video Game Tournament</h3>
-<p>Friday, September 16th at 7:00 pm</p>
-<p></p>
-<p>Get ready for ACM's first video game tournament/ info session! There will be food, competition, socialization, and information about ACM. Invite anyone you want whether they're Computer Science majors or not!</p>
-<div >
-<span>
-  <a>Location: TBA</a>
-<a href="https://www.facebook.com/events/643423915818061">Facebook</a>
-</span>
-</div>
-</div>
-<div style="text-align:center;">
-<a href="http://www.ufacm.com">Website</a>
-<a href="https://www.facebook.com/groups/ufacm/">Facebook Page</a>
-
--->
