@@ -1,3 +1,4 @@
+//-------------Start Facebook API calling support --------------//
  function statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
@@ -60,49 +61,77 @@
         'Thanks for logging in, ' + response.name + '!';
     });
   }
-var events;
-function loadEvents()
+//---------------END FACEBOOK SUPPORT ------------------//
+//---------------START EVENT SUPPORT -------------------//
+//loads a single page based on its code
+function loadPageEvents(groupID, callBack)
 {
-
   FB.getAuthResponse();
   FB.api(
-  '/494011427297346/events',
+  '/' + groupID +'/events',
   'GET',
   {},
   function(res) {
-    events = res;
+    console.log("ASYNC call made");
+    var tempEvents = res;
+    console.log(tempEvents);
+    callBack(tempEvents);
   });
 }
-var temp = [];
-function filter()
+//loads all the events from all the sigs
+function loadAllEvents(callBack)
 {
+    var totalEvents = [];
+    var groupIDs = [];
+    groupIDs.push("494011427297346"); //ACM 
+    groupIDs.push("1050011381726686");//GatorVR
+    var count = 0;
+    for(var i =0; i<groupIDs.length; i++)
+    {
+      loadPageEvents(groupIDs[i],function(tempEvents) //store async using callback
+      {
+        console.log(tempEvents);
+        totalEvents = totalEvents.concat(tempEvents.data);
+        //TODO add filtering functions 
+        count++; 
+        if(count == groupIDs.length)
+        {
+          console.log(totalEvents);
+          callBack(totalEvents);
+        }
+      }); 
+    }
+}
+//filter data to only show a week out, and nothing before
+function filterDate(events)
+{
+  console.log("filtering...");
+  var temp = [];
   var current = new Date();
-
-
   events = events.data;
   for(var i=0; i < events.length; i++)
   {
-    console.log("is less than ")
     var eventTime = new Date(events[i].start_time);
     if(current.getTime() <  eventTime.getTime() && eventTime.getTime() < (current.getTime() + 604800000))
     {
       temp.unshift( events[i]);
     }
   }
-  console.log("tttt");
   console.log(temp);
+  return temp;
 }
-//------------------------------///
+//--------------END EVENT SUPPORT---------------//
+//------------UI ANGULAR PORTION---------------///
 var app = angular.module("main",  ['angularMoment']); 
 app.controller("myEmail", function($scope) {
   $scope.greeting = "This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!";
   $scope.title = "Hello UFACM!";
   $scope.getEvents = function() {
-    loadEvents();
-    filter();
-    $scope.events = temp;
-    console.log($scope.events);
-    console.log(events);
+    loadAllEvents(function(events){
+      $scope.events = events; 
+      console.log($scope.events);
+    });
+    
   };
   $scope.generateHTML= function(){
     generateHTML();
