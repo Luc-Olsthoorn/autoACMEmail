@@ -91,7 +91,8 @@ function loadAllEvents(callBack)
       loadPageEvents(groupIDs[i],function(tempEvents) //store async using callback
       {
         console.log(tempEvents);
-        totalEvents = totalEvents.concat(tempEvents.data);
+        var temp = filterDesc(tempEvents.data)
+        totalEvents = totalEvents.concat(temp);
         //TODO add filtering functions 
         count++; 
         if(count == groupIDs.length)
@@ -105,17 +106,48 @@ function loadAllEvents(callBack)
 //filter data to only show a week out, and nothing before
 function filterDate(events)
 {
-  console.log("filtering...");
+  console.log("filtering by date...");
   var temp = [];
   var current = new Date();
-  events = events.data;
   for(var i=0; i < events.length; i++)
   {
     var eventTime = new Date(events[i].start_time);
     if(current.getTime() <  eventTime.getTime() && eventTime.getTime() < (current.getTime() + 604800000))
     {
-      temp.unshift( events[i]);
+      temp.unshift( events[i]);//add to list list
     }
+  }
+  console.log(temp);
+  return temp;
+}
+//given a keyword in desc filter it based on that.
+function filterDesc(events)
+{
+  var key = "white"; //key that says they do not want to be on the list serve
+  console.log("filtering by desc...");
+  var temp = [];
+  for(var i=0; i < events.length; i++)
+  { 
+    var addToList = true;
+    if(events[i].description != null)
+    {
+       var desc = events[i].description.split(" ");
+      for(var j = 0; j <  desc.length; j++)
+      {
+        if(desc[j] == key)
+        {
+            addToList = false; 
+        }
+      }
+      if(addToList)
+      {
+        temp.unshift( events[i]);
+      }
+    } 
+    else
+    {
+      temp.unshift( events[i]);
+    }  
   }
   console.log(temp);
   return temp;
