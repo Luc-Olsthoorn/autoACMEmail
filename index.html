@@ -8,6 +8,7 @@
 <html> 
 <body>
   <div ng-app="main" ng-controller="myEmail">
+    <div class ="container">
     <div class="ui grid">
       <div class="eight wide column">
         <h1>Generate UFACM listServe email</h1>     
@@ -20,15 +21,25 @@
             <label>Greeting</label>
             <textarea ng-model="greeting" ng-change="updateCode()"></textarea>
           </div>
-          <button class="ui button" ng-click="getEvents()" >Get events</button>
+          <div class="ui buttons">
+            <button class="ui button" ng-click=" getEvents()" >Get events</button>
+
+            <a class="ui label">
+            <fb:login-button data-size="large" scope="public_profile,email" onlogin="checkLoginState();">
+            </fb:login-button>
+            </a>
+          </div>
+          <div id="status"></div>
+          <div class="field">
+            <label>Footer</label>
+            <textarea rows="2" ng-model="footer" ng-change="updateCode()"></textarea>
+          </div>
         </div>
-        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-        </fb:login-button>
-        <div id="status"></div>
+        
         <h1>Generated Code</h1>
         <div class="ui form">
           <div class="field">
-            <textarea id ="outputCode" ></textarea>
+            <textarea ng-model="generatedCode" ></textarea>
           </div>
         </div>
       </div>
@@ -36,7 +47,7 @@
         <h1>Generated Email Preview</h1>
         <div class="ui raised very padded text container segment" style="overflow-y:auto; height: 90%;" id="emailPreview">
           <h1 style="text-align: center;">{{title}}</h1>
-          <p>{{greeting}}</p>
+          <div ng-bind-html= "greeting | trust"></div>
           <div ng-repeat="x in events">
             <h3 style="text-align:center;">{{x.name}}</h3>
             <p>{{x.start_time | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</p>
@@ -46,10 +57,12 @@
               <a href="https://www.facebook.com/events/{{x.id}}/">Facebook</a>
             </div>
           </div>
+          <div ng-bind-html= "footer | trust"></div>
         </div>
       </div>
     </div>
   </div>
+</div>
 </body>
 <script src ="./support.js"></script>
 </html>

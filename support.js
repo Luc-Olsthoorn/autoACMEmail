@@ -160,10 +160,14 @@ function filterDesc(events)
 function generateHTML(){
   console.log("grabbing");
   var temp = document.getElementById("emailPreview").innerHTML
-  document.getElementById("outputCode").innerHTML = temp;
-  console.log(temp);
   return temp; 
 }
+//TODO: add function for filtering by date
+//----  fix problem of havig to click in order for the events to appear
+//----  Test its functionality
+//----  Polish, add options for filtering events, add select events
+//----  Make beautiful
+//----  Add all sigs numbers
 
 //--------------END EVENT SUPPORT---------------//
 //------------UI ANGULAR PORTION---------------///
@@ -171,27 +175,39 @@ var app = angular.module("main",  ['angularMoment']);
 app.controller("myEmail", function($scope) {
   $scope.greeting = "This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!";
   $scope.title = "Hello UFACM!";
+  $scope.footer = '<div style="text-align:center;"><a href="http://www.ufacm.com">Website</a><a href="https://www.facebook.com/groups/ufacm/">Facebook Page</a>';
   $scope.getEvents = function() {
     loadAllEvents(function(events){
-      $scope.events = events; 
+      $scope.events = events;
+      console.log("Events:"); 
+      console.log($scope.events);
+      $scope.$apply();
       $scope.generatedCode = generateHTML();
+      $scope.$apply();
     });
     
   };
   $scope.updateCode =function(){
       console.log("updating codebase...");
       setTimeout(function(){// used to delay for actual html being changed before getting posted 
-      $scope.generatedCode = generateHTML();
+        $scope.generatedCode = generateHTML();
         console.log("pushing:");
-        console.log($scope.generatedCode);
+        $scope.$apply();
        }, 0);
+
       console.log("moving on");
   }
+
     
 
-  $scope.generatedCode = generateHTML();//TODO check to see if this is reduncdant 
+  $scope.generatedCode = generateHTML();
 });
 
+app.filter("trust", ['$sce', function($sce) {
+  return function(htmlCode){
+    return $sce.trustAsHtml(htmlCode);
+  }
+}]);
     
 
 
