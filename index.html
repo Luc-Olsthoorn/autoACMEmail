@@ -1,42 +1,55 @@
 <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-
+<script src ="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.js"></script>
 <script src = "./moment.js"></script>
 <script src = "./angular-moment.js"></script>
+<!-- CSS -->
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.css">
 <html> 
 <body>
-
-  <h1>Generate UFACM listServe email</h1>
-  <div style="width:50%;">
-  
-
-
-  <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-  </fb:login-button>
-
-  <div id="status"></div>
-  
   <div ng-app="main" ng-controller="myEmail">
-    <button class="ui button" ng-click="getEvents()" >Get events</button>
-    <input type="text" name="title" ng-model="title" placeholder="">
-    <input type="text" name="Greeting" ng-model="greeting" placeholder="">
-
-    <h1 style="text-align: center;">{{title}}</h1>
-    <p>{{greeting}}</p>
-    <div ng-repeat="x in events">
-      <h3 style="text-align:center;">{{x.name}}</h3>
-      <p>{{x.start_time | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</p>
-
-      <p>{{x.description}}</p>
-      <div>
-        <a>Location: {{x.place.name}}</a>
-        <a href="https://www.facebook.com/events/{{x.id}}/">Facebook</a></div>
+    <div class="ui grid">
+      <div class="eight wide column">
+        <h1>Generate UFACM listServe email</h1>     
+        <div class="ui form">       
+          <div class="field">
+            <label>Title</label>
+            <textarea rows="2" ng-model="title" ng-change="updateCode()"></textarea>
+          </div>
+          <div class="field">
+            <label>Greeting</label>
+            <textarea ng-model="greeting" ng-change="updateCode()"></textarea>
+          </div>
+          <button class="ui button" ng-click="getEvents()" >Get events</button>
+        </div>
+        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+        </fb:login-button>
+        <div id="status"></div>
+        <h1>Generated Code</h1>
+        <div class="ui form">
+          <div class="field">
+            <textarea id ="outputCode" ></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="eight wide column">
+        <h1>Generated Email Preview</h1>
+        <div class="ui raised very padded text container segment" style="overflow-y:auto; height: 90%;" id="emailPreview">
+          <h1 style="text-align: center;">{{title}}</h1>
+          <p>{{greeting}}</p>
+          <div ng-repeat="x in events">
+            <h3 style="text-align:center;">{{x.name}}</h3>
+            <p>{{x.start_time | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</p>
+            <p>{{x.description}}</p>
+            <div>
+              <a>Location: {{x.place.name}}</a>
+              <a href="https://www.facebook.com/events/{{x.id}}/">Facebook</a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-        
-
 </body>
 <script src ="./support.js"></script>
 </html>
-

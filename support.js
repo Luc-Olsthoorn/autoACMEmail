@@ -83,8 +83,13 @@ function loadAllEvents(callBack)
 {
     var totalEvents = [];
     var groupIDs = [];
+    
     groupIDs.push("494011427297346"); //ACM 
     groupIDs.push("1050011381726686");//GatorVR
+    //1499711090349840 // UF hackathoners
+    //1695957843991327 //ftp
+
+
     var count = 0;
     for(var i =0; i<groupIDs.length; i++)
     {
@@ -98,7 +103,7 @@ function loadAllEvents(callBack)
         if(count == groupIDs.length)
         {
           console.log(totalEvents);
-          callBack(totalEvents);
+          callBack(totalEvents); // stores it once all are loaded
         }
       }); 
     }
@@ -149,9 +154,17 @@ function filterDesc(events)
       temp.unshift( events[i]);
     }  
   }
-  console.log(temp);
+  //console.log(temp);
   return temp;
 }
+function generateHTML(){
+  console.log("grabbing");
+  var temp = document.getElementById("emailPreview").innerHTML
+  document.getElementById("outputCode").innerHTML = temp;
+  console.log(temp);
+  return temp; 
+}
+
 //--------------END EVENT SUPPORT---------------//
 //------------UI ANGULAR PORTION---------------///
 var app = angular.module("main",  ['angularMoment']); 
@@ -161,13 +174,22 @@ app.controller("myEmail", function($scope) {
   $scope.getEvents = function() {
     loadAllEvents(function(events){
       $scope.events = events; 
-      console.log($scope.events);
+      $scope.generatedCode = generateHTML();
     });
     
   };
-  $scope.generateHTML= function(){
-    generateHTML();
-  };
+  $scope.updateCode =function(){
+      console.log("updating codebase...");
+      setTimeout(function(){// used to delay for actual html being changed before getting posted 
+      $scope.generatedCode = generateHTML();
+        console.log("pushing:");
+        console.log($scope.generatedCode);
+       }, 0);
+      console.log("moving on");
+  }
+    
+
+  $scope.generatedCode = generateHTML();//TODO check to see if this is reduncdant 
 });
 
     
