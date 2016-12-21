@@ -6,14 +6,16 @@
 
       testAPI();
     } else if (response.status === 'not_authorized') {
+      
       // The person is logged into Facebook, but not your app.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into this app.';
+      //document.getElementById('status').innerHTML = 'Please log ' +
+        //'into this app.';
     } else {
+      
       // The person is not logged into Facebook, so we're not sure if
       // they are logged into this app or not.
-      document.getElementById('status').innerHTML = 'Please log ' +
-        'into Facebook.';
+      //document.getElementById('status').innerHTML = 'Please log ' +
+        //'into Facebook.';
     }
   }
 
@@ -21,7 +23,9 @@
   // Button.  See the onlogin handler attached to it in the sample
   // code below.
   function checkLoginState() {
+    
     FB.getLoginStatus(function(response) {
+
       statusChangeCallback(response);
     });
   }
@@ -57,8 +61,10 @@
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
-      document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '!';
+      document.getElementById('eventsBtn');
+      document.getElementById('eventsBtn').classList.remove("disabled");
+      var element = document.getElementById("fbBtn");
+      element.parentNode.removeChild(element);
     });
   }
 //---------------END FACEBOOK SUPPORT ------------------//
