@@ -92,8 +92,16 @@ function loadAllEvents(callBack)
     
     groupIDs.push("494011427297346"); //ACM 
     groupIDs.push("1050011381726686");//GatorVR
-    //1499711090349840 // UF hackathoners
-    //1695957843991327 //ftp
+    groupIDs.push("1499711090349840"); // UF hackathoners
+    groupIDs.push("1695957843991327"); //ftp
+    groupIDs.push("1117503371616849"); // AI
+    groupIDs.push("1831203810447278"); // ftg
+    groupIDs.push("99733850610"); // UF Programming team
+    groupIDs.push("420010478012940");// SEC
+    groupIDs.push("271624353233715"); //DAS
+    groupIDs.push("171633596576554"); //SIT
+    groupIDs.push("162833737423706"); // Open source Club
+
 
 
     var count = 0;
@@ -102,9 +110,9 @@ function loadAllEvents(callBack)
       loadPageEvents(groupIDs[i],function(tempEvents) //store async using callback
       {
         console.log(tempEvents);
-        var temp = filterDesc(tempEvents.data)
+        var temp = filterDate(tempEvents.data)
         totalEvents = totalEvents.concat(temp);
-        //TODO add filtering functions 
+        
         count++; 
         if(count == groupIDs.length)
         {
@@ -134,7 +142,7 @@ function filterDate(events)
 //given a keyword in desc filter it based on that.
 function filterDesc(events)
 {
-  var key = "white"; //key that says they do not want to be on the list serve
+  var key = "iiiiiiiiii"; //key that says they do not want to be on the list serve
   console.log("filtering by desc...");
   var temp = [];
   for(var i=0; i < events.length; i++)
@@ -168,20 +176,15 @@ function generateHTML(){
   var temp = document.getElementById("emailPreview").innerHTML
   return temp; 
 }
-//TODO: add function for filtering by date
-//----  fix problem of havig to click in order for the events to appear
-//----  Test its functionality
-//----  Polish, add options for filtering events, add select events
-//----  Make beautiful
-//----  Add all sigs numbers
+
 
 //--------------END EVENT SUPPORT---------------//
 //------------UI ANGULAR PORTION---------------///
 var app = angular.module("main",  ['angularMoment']); 
 app.controller("myEmail", function($scope) {
-  $scope.greeting = "This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!";
+  $scope.greeting = "<link href='https://fonts.googleapis.com/css?family=Roboto:400,200,300' rel='stylesheet' type='text/css'><style>p{font-family: 'Roboto', sans-serif;}h1{font-family: 'Roboto', sans-serif;font-weight: 300;}h2{font-family: 'Roboto', sans-serif;font-weight: 400;}h3{font-family: 'Roboto', sans-serif;font-weight: 100;}</style>This is our weekly update, where we keep you up-to-date on upcoming ACM events and happenings. Remember to join the Facebook group UF ACM to stay connected with us and catch even more opportunities!";
   $scope.title = "Hello UFACM!";
-  $scope.footer = '<div style="text-align:center;"><a href="http://www.ufacm.com">Website</a><a href="https://www.facebook.com/groups/ufacm/">Facebook Page</a>';
+  $scope.footer = '<div style="text-align:center;"><a href="http://www.ufacm.com">Website</a><a href="https://www.facebook.com/groups/ufacm/">Facebook Page</a></div>';
   $scope.getEvents = function() {
     loadAllEvents(function(events){
       $scope.events = events;
