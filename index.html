@@ -5,9 +5,9 @@
 <script src = "./angular-moment.js"></script>
 <!-- CSS -->
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.css">
-<html> 
+<html>
 <body>
-   
+
   <div ng-app="main" ng-controller="myEmail">
     <div class ="container ui">
        <div class=" ui masthead vertical segment">
@@ -20,8 +20,8 @@
         <div class="ui segment  inverted blue">
        <div class=" ui masthead vertical segment">
         <h3 class="ui center aligned header inverted ">Enter info</h3>
-        </div>     
-        <div class="ui  inverted form">       
+        </div>
+        <div class="ui  inverted form">
           <div class="field">
             <label>Title</label>
             <textarea rows="1" ng-model="title" ng-change="updateCode()"></textarea>
@@ -33,7 +33,7 @@
           <div class="field">
             <label>Import events</label>
             <div class="ui buttons">
-              <button  id ="eventsBtn" class="ui button disabled inverted" ng-click=" getEvents()" >Get events</button>
+              <button id ="eventsBtn" class="ui button disabled inverted" event-fetcher="exp">Get events</button>
               <a class="ui label blue" id="fbBtn">
                 <fb:login-button  data-size="large" scope="public_profile,email" onlogin="checkLoginState();">
                 </fb:login-button>
@@ -62,7 +62,7 @@
         <div class="ui raised  segment" style="overflow-y:auto; height: 75%;" id="emailPreview">
           <h1 style="text-align: center;">{{title}}</h1>
           <div ng-bind-html= "greeting | trust"></div>
-          <div ng-repeat="x in events">
+          <div ng-repeat="x in events" class="event">
             <h3 style="text-align:center;">{{x.name}}</h3>
             <p>{{x.start_time | amDateFormat:'dddd, MMMM Do YYYY, h:mm:ss a'}}</p>
             <p>{{x.description}}</p>
